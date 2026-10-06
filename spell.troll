@@ -19,6 +19,11 @@ let spell_get_damage = func() {
         return 20
     }
 }
+func spell_get_damage() {
+}
+
+func spell.on_hit() {
+}
 
 spell.on_hit = func(target_name) {
     let damage = spell_get_damage()

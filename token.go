@@ -1,3 +1,5 @@
+package main
+
 type TokenKind int
 const (
 	// One-char tokens
@@ -39,6 +41,8 @@ const (
 	TOKEN_NIL
 	TOKEN_TRUE
 	TOKEN_FALSE
+	TOKEN_FOR
+	TOKEN_WHILE
 
 	// Other
 	TOKEN_EOF

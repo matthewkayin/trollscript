@@ -22,8 +22,6 @@ var identifierToToken map[string]TokenKind = map[string]TokenKind {
 }
 
 type Scanner struct {
-	hasError bool
-	errorMessages []string
 	source string
 	tokens []Token
 
@@ -34,8 +32,6 @@ type Scanner struct {
 
 func ScannerInit(source string) *Scanner {
 	return &Scanner {
-		hasError: false,
-		errorMessages: make([]string, 0, 1),
 		source: source,
 		tokens: make([]Token, 0, 1),
 
@@ -56,10 +52,6 @@ func (scanner *Scanner) scanTokens() {
 		line: scanner.line,
 		literal: nil,
 	})
-}
-
-func (scanner *Scanner) addError(message string) {
-	scanner.errorMessages = append(scanner.errorMessages, fmt.Sprintf("Error on line %d: %s", scanner.line, message))
 }
 
 func (scanner *Scanner) isAtEnd() bool {
@@ -171,7 +163,7 @@ func (scanner *Scanner) scanToken() {
 			}
 
 			if scanner.isAtEnd() {
-				scanner.addError("Unterminated string")
+				TrollReportError(scanner.line, "Unterminated string")
 				return
 			}
 
@@ -187,7 +179,7 @@ func (scanner *Scanner) scanToken() {
 			} else if isAlpha(c) {
 				scanner.scanIdentifier()
 			} else {
-				scanner.addError(fmt.Sprintf("Unexpected character '%c'", c))
+				TrollReportError(scanner.line, fmt.Sprintf("Unexpected character '%c'", c))
 			}
 		}
 	}
@@ -211,7 +203,7 @@ func (scanner *Scanner) scanNumber() {
 	literal := scanner.source[scanner.start:scanner.current]
 	num, err := strconv.ParseFloat(literal, 64)
 	if err != nil {
-		scanner.addError(fmt.Sprintf("Error parsing number literal '%s': %s",
+		TrollReportError(scanner.line, fmt.Sprintf("Error parsing number literal '%s': %s",
 			literal, err.Error()))
 		return
 	}
